@@ -1,0 +1,30 @@
+# Enhanced Dolphin Configuration for Field Detection
+# NOTE: This config requires retraining or fine-tuning the model
+# Use Dolphin.yaml for inference with pretrained weights
+
+model:
+  model_name_or_path: "./checkpoints/dolphin_model.bin"
+  tokenizer_path: "./checkpoints/dolphin_tokenizer.json"
+  extra_answer_tokens: True   # add <Answer/> token
+  max_length: 6144            # Increased for complex documents with more fields
+  decoder_layer: 12           # More processing layers for better understanding
+  max_position_embeddings: 6144  # Match max_length for consistency
+  hidden_dimension: 1024      # Keep current - good balance
+  swin_args:
+    name: 'swin'
+    img_size: [1024, 1024]    # Higher resolution for better field detection
+    patch_size: 4             # Keep fine granularity for detailed features
+    embed_dim: 256            # Increased visual features for better field recognition
+    align_long_axis: False
+    window_size: 8            # Slightly larger attention window
+    encoder_layer: [2, 2, 16, 2]  # More layers in deeper stages for complex patterns
+    num_heads: [4, 8, 16, 32] # Keep current attention heads structure
+
+# Training/Fine-tuning parameters for enhanced field detection
+training:
+  field_detection_weight: 2.0    # Higher weight for field-related losses
+  edge_detection_loss: True      # Enable edge detection auxiliary loss
+  layout_consistency_loss: True  # Ensure layout parsing consistency
+  learning_rate: 1e-5           # Lower LR for fine-tuning
+  warmup_steps: 1000            # Gradual warmup
+  gradient_clip: 1.0            # Prevent gradient explosion
